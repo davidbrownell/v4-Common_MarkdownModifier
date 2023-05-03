@@ -1,0 +1,20 @@
+name: "Validate"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_setup:                          {type: boolean, required: false, default: false, description: "Apply the '--force' flag during setup activities."}
+      force_activate:                       {type: boolean, required: false, default: false, description: "Apply the '--force' flag during activation activities."}
+      no_cache:                             {type: boolean, required: false, default: false, description: "Do not use the GitHub action cache for this build."}
+
+jobs:
+  _969e85f4-ea9e-4e5d-b9e7-a567f8cf84b5:
+    name: "Validate (${{ github.ref_name }})"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-latest
+    with:
+      repo_branch: ${{ github.ref_name }}
+
+      force_setup: ${{ inputs.force_setup }}
+      force_activate: ${{ inputs.force_activate }}
+      no_cache: ${{ inputs.no_cache }}

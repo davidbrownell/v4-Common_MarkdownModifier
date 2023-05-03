@@ -1,0 +1,12 @@
+name: "Validate (including dependencies)"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+
+jobs:
+  _9578d454-c1c5-424c-8d79-b7f1fa545eb3:
+    name: "Validate (${{ github.ref_name }})"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate_with_dependencies.yaml@CI-latest
+    with:
+      repo_branch: ${{ github.ref_name }}

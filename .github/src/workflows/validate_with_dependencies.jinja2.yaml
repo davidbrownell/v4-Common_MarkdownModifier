@@ -1,0 +1,30 @@
+# ----------------------------------------------------------------------
+# |
+# |  validate_with_dependencies.jinja2.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-05-03 10:53:20
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+name: "[callable] Validates v4-Common_MarkdownModifier (and its dependencies)"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  workflow_call:
+    inputs:
+      repo_branch:                          {type: string, required: true}
+
+jobs:
+  _dc94b6b0-985b-4de3-adf7-38ccd5d230f9:
+    name: "v4-Common_MarkdownModifier"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-latest
+    with:
+      repo_branch: ${{ inputs.repo_branch }}
+      bootstrap_branch_overrides: "v4-Common_MarkdownModifier:${{ inputs.repo_branch }}"

@@ -1,0 +1,23 @@
+name: "on push"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: "on_push-${{ github.ref_name }}"
+
+jobs:
+  _86312fae-87b8-401c-9fa3-1e06f065b2f5:
+    name: "Validate (${{ github.ref_name }})"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate_with_dependencies.yaml@CI-latest
+    with:
+      repo_branch: ${{ github.ref_name }}
+
+  _4b042575-6936-4145-998c-c86f64be21cd:
+    name: "Promote"
+    uses: davidbrownell/v4-Common_Foundation/.github/workflows/callable_promote.yaml@CI-v1
+
+    needs:
+      - _86312fae-87b8-401c-9fa3-1e06f065b2f5

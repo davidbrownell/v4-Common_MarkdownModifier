@@ -1,0 +1,38 @@
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+#
+# This file is the result of a code generation process; any changes made
+# to this file will be overwritten during the next code generation
+# invocation. Any changes MUST be made in the source file rather than in
+# this one.
+#
+#     Code Generator:         Jinja2
+#     Input Filename:         workflows/event_periodic.jinja2.yaml
+#
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
+name: "on periodic"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Once a day at 12am UTC
+
+jobs:
+  _9093a936-5ed4-4490-b2ab-f8dfb9812a29:
+    name: "Validate (${{ github.ref_name }})"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-latest
+    with:
+      repo_branch: ${{ github.ref_name }}
+
+  _d86e2538-d98b-4b26-bdae-d6095f282e5b:
+    name: "Validate with Dependencies (${{ github.ref_name }})"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate_with_dependencies.yaml@CI-latest
+    with:
+      repo_branch: ${{ github.ref_name }}
+
+    needs:
+      - _9093a936-5ed4-4490-b2ab-f8dfb9812a29

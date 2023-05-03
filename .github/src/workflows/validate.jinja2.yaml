@@ -1,0 +1,186 @@
+# ----------------------------------------------------------------------
+# |
+# |  validate.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-05-03 10:47:06
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+name: "[callable] Validates v4-Common_MarkdownModifier"
+
+on:
+  workflow_call:
+    inputs:
+      repo_branch:                          {type: string, required: true}
+      force_setup:                          {type: boolean, required: false, default: false}
+      force_activate:                       {type: boolean, required: false, default: false}
+      no_cache:                             {type: boolean, required: false, default: false}
+
+      bootstrap_branch_overrides:           {type: string, required: false}
+
+jobs:
+  # ----------------------------------------------------------------------
+  _<<< guid() >>>:
+    name: "Build and Test: standard"
+
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+    uses: davidbrownell/v4-Common_Foundation/.github/workflows/callable_validate.yaml@CI-latest
+    with:
+      job_name_prefix: "v4-Common_MarkdownModifier"
+      repo_name: davidbrownell/v4-Common_MarkdownModifier
+      repo_branch: ${{ inputs.repo_branch }}
+      bootstrap_branch_overrides: ${{ inputs.bootstrap_branch_overrides }}
+
+      os: ${{ matrix.os }}
+      configuration: standard
+
+      run_Builder: true
+      run_MatchTests: true
+
+      force_setup: ${{ inputs.force_setup }}
+      force_activate: ${{ inputs.force_activate }}
+      no_cache: ${{ inputs.no_cache }}
+
+      # Use the following values to control how different test types are run:
+      #
+      #   0: Do not run these test types
+      #   1: Run these test types without code coverage
+      #   2: Run these test types with code coverage
+      #   3: Run these test types with and without code coverage
+
+      execute_UnitTests: 3
+      execute_FunctionalTests: 1
+      execute_IntegrationTests: 1
+      execute_SystemTests: 1
+      execute_LocalEndToEndTests: 1
+      execute_EndToEndTests: 0
+      execute_BuildVerificationTests: 1
+      execute_PerformanceTests: 0
+
+# Note that we aren't using a matrix for the os here as we want to increase overall throughput
+# (rather than forcing the binary validation job to wait until all of the dev jobs are complete).
+<<%
+  set os_values = [
+    "macos-latest",
+    "ubuntu-latest",
+    "windows-latest",
+  ]
+%>>
+<<% for os in os_values %>>
+  # ----------------------------------------------------------------------
+  # |
+  # |  <<< os >>>
+  # |
+  # ----------------------------------------------------------------------
+  _<<< guid(os + "dev") >>>:
+    name: "Build and Test: dev"
+    uses: davidbrownell/v4-Common_PythonDevelopment/.github/workflows/callable_validate.yaml@CI-latest
+    with:
+      job_name_prefix: "v4-Common_MarkdownModifier"
+      repo_name: davidbrownell/v4-Common_MarkdownModifier
+      repo_branch: ${{ inputs.repo_branch }}
+      bootstrap_branch_overrides: ${{ inputs.bootstrap_branch_overrides }}
+
+      os: <<< os >>>
+      configuration: dev
+
+      run_PylintVerifier: true
+      run_Builder: true
+      run_MatchTests: true
+
+      force_setup: ${{ inputs.force_setup }}
+      force_activate: ${{ inputs.force_activate }}
+      no_cache: ${{ inputs.no_cache }}
+
+      # Use the following values to control how different test types are run:
+      #
+      #   0: Do not run these test types
+      #   1: Run these test types without code coverage
+      #   2: Run these test types with code coverage
+      #   3: Run these test types with and without code coverage
+
+      execute_UnitTests: 3
+      execute_FunctionalTests: 1
+      execute_IntegrationTests: 1
+      execute_SystemTests: 1
+      execute_LocalEndToEndTests: 1
+      execute_EndToEndTests: 1
+      execute_BuildVerificationTests: 1
+      execute_PerformanceTests: 0
+
+  # ----------------------------------------------------------------------
+  _<<< guid() >>>:
+    name: "v4-Common_MarkdownModifier (<<< os >>>, dev binaries)"
+    runs-on: <<< os >>>
+    needs:
+      - _<<< guid(os + "dev") >>>
+
+    steps:
+      - name: "[Impl] Dump Contexts"
+        if: ${{ startsWith('<<< os >>>', 'ubuntu') }}
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/dump_contexts@CI-v1
+
+      # outputs:
+      #   - github_workspace
+      #   - local_script_prefix
+      #   - script_extension
+      #   - shell_name
+      #   - source_command
+      #   - sudo_command
+      #
+      - name: "[Impl] Initialize OS-Specific Variables"
+        id: initialize
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/initialize@CI-v1
+        with:
+          os: <<< os >>>
+
+      # outputs:
+      #   - archive_prefix
+      #   - repo_dir
+      #   - repo_dependencies_dir
+      #
+      - name: Checkout Source
+        id: checkout_source
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/checkout_source@CI-v1
+        with:
+          repo_name: davidbrownell/v4-Common_MarkdownModifier
+          repo_branch: ${{ inputs.repo_branch }}
+
+          os: <<< os >>>
+          configuration: dev
+
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+
+      # outputs:
+      #   - artifacts_dir
+      #
+      - name: Unbundle Build Artifacts
+        id: unbundle
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
+        with:
+          archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
+          artifacts_path: src/SimpleSchema/Build
+
+          os: <<< os >>>
+
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
+
+      - name: Run Test
+        run: |
+          python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/SimpleSchema/src/SimpleSchema/TestFiles/Binary_BuildVerificationTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
+
+<<% endfor %>>
