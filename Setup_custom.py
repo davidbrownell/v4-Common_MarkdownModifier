@@ -41,6 +41,7 @@ def GetConfigurations() -> Union[
     ],
 ]:
     common_python_libraries: List[Configuration.VersionInfo] = [
+        Configuration.VersionInfo("nltk", SemVer("3.8.1")),
     ]
 
     configurations: Dict[str, Configuration.Configuration] = {
