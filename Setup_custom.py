@@ -41,6 +41,7 @@ def GetConfigurations() -> Union[
     ],
 ]:
     common_python_libraries: List[Configuration.VersionInfo] = [
+        Configuration.VersionInfo("cogapp", SemVer("3.3.0")),
         Configuration.VersionInfo("nltk", SemVer("3.8.1")),
     ]
 
