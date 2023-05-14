@@ -43,7 +43,7 @@ on:
 
 jobs:
   # ----------------------------------------------------------------------
-  _e180654c-16bc-4aa7-9536-09b341ff440f:
+  _f93594bf-b17b-47e1-b484-3d2cd44376e3:
     name: "Build and Test: standard"
 
     strategy:
@@ -93,7 +93,7 @@ jobs:
   # |  macos-latest
   # |
   # ----------------------------------------------------------------------
-  _c4d667f6-3fc6-4f70-a7e4-b3fc73491274:
+  _2f59680e-bb0b-45ef-a977-4fa499faad44:
     name: "Build and Test: dev"
     uses: davidbrownell/v4-Common_PythonDevelopment/.github/workflows/callable_validate.yaml@CI-latest
     with:
@@ -130,11 +130,11 @@ jobs:
       execute_PerformanceTests: 0
 
   # ----------------------------------------------------------------------
-  _42f36c47-5b52-4ee2-90f0-c30aa1e5144e:
+  _466d167a-8ae0-4d4e-a284-bef9bccc49b2:
     name: "v4-Common_MarkdownModifier (macos-latest, dev binaries)"
     runs-on: macos-latest
     needs:
-      - _c4d667f6-3fc6-4f70-a7e4-b3fc73491274
+      - _2f59680e-bb0b-45ef-a977-4fa499faad44
 
     steps:
       - name: "[Impl] Dump Contexts"
@@ -175,28 +175,28 @@ jobs:
       # outputs:
       #   - artifacts_dir
       #
-      # TODO: - name: Unbundle Build Artifacts
-      # TODO:   id: unbundle
-      # TODO:   uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
-      # TODO:   with:
-      # TODO:     archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
-      # TODO:     artifacts_path: src/MarkdownModifier/Build
-      # TODO:
-      # TODO:     os: macos-latest
-      # TODO:
-      # TODO:     shell_name: ${{ steps.initialize.outputs.shell_name }}
-      # TODO:     working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
-      # TODO:
-      # TODO: - name: Run Test
-      # TODO:   run: |
-      # TODO:     python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/MarkdownModifier/TestFiles/Binary_BuildVerificationTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
+      - name: Unbundle Build Artifacts
+        id: unbundle
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
+        with:
+          archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
+          artifacts_path: src/MarkdownModifier/Build
+
+          os: macos-latest
+
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
+
+      - name: Run Test
+        run: |
+          python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/EntryPoint/LocalEndToEndTests/BuildVerification_LocalEndToEndTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
 
   # ----------------------------------------------------------------------
   # |
   # |  ubuntu-latest
   # |
   # ----------------------------------------------------------------------
-  _e7c6e21a-2b98-4ac7-9f24-b6c41450064d:
+  _9294f0f2-7bce-424d-a98d-56b505eb440d:
     name: "Build and Test: dev"
     uses: davidbrownell/v4-Common_PythonDevelopment/.github/workflows/callable_validate.yaml@CI-latest
     with:
@@ -233,11 +233,11 @@ jobs:
       execute_PerformanceTests: 0
 
   # ----------------------------------------------------------------------
-  _bb29f361-9699-4e2e-8129-233236283355:
+  _9f6fb80e-1008-436e-a252-e14f8b619454:
     name: "v4-Common_MarkdownModifier (ubuntu-latest, dev binaries)"
     runs-on: ubuntu-latest
     needs:
-      - _e7c6e21a-2b98-4ac7-9f24-b6c41450064d
+      - _9294f0f2-7bce-424d-a98d-56b505eb440d
 
     steps:
       - name: "[Impl] Dump Contexts"
@@ -278,28 +278,28 @@ jobs:
       # outputs:
       #   - artifacts_dir
       #
-      # TODO: - name: Unbundle Build Artifacts
-      # TODO:   id: unbundle
-      # TODO:   uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
-      # TODO:   with:
-      # TODO:     archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
-      # TODO:     artifacts_path: src/MarkdownModifier/Build
-      # TODO:
-      # TODO:     os: ubuntu-latest
-      # TODO:
-      # TODO:     shell_name: ${{ steps.initialize.outputs.shell_name }}
-      # TODO:     working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
-      # TODO:
-      # TODO: - name: Run Test
-      # TODO:   run: |
-      # TODO:     python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/MarkdownModifier/TestFiles/Binary_BuildVerificationTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
+      - name: Unbundle Build Artifacts
+        id: unbundle
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
+        with:
+          archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
+          artifacts_path: src/MarkdownModifier/Build
+
+          os: ubuntu-latest
+
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
+
+      - name: Run Test
+        run: |
+          python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/EntryPoint/LocalEndToEndTests/BuildVerification_LocalEndToEndTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
 
   # ----------------------------------------------------------------------
   # |
   # |  windows-latest
   # |
   # ----------------------------------------------------------------------
-  _2142510c-626b-4632-817a-171cd14971b2:
+  _ce4fa966-e5d9-4e59-afb0-bfec482672de:
     name: "Build and Test: dev"
     uses: davidbrownell/v4-Common_PythonDevelopment/.github/workflows/callable_validate.yaml@CI-latest
     with:
@@ -336,11 +336,11 @@ jobs:
       execute_PerformanceTests: 0
 
   # ----------------------------------------------------------------------
-  _166b6601-19a5-4617-9776-74ceea960bff:
+  _c0017f48-8035-49f2-8275-1b18eb5a2c74:
     name: "v4-Common_MarkdownModifier (windows-latest, dev binaries)"
     runs-on: windows-latest
     needs:
-      - _2142510c-626b-4632-817a-171cd14971b2
+      - _ce4fa966-e5d9-4e59-afb0-bfec482672de
 
     steps:
       - name: "[Impl] Dump Contexts"
@@ -381,19 +381,19 @@ jobs:
       # outputs:
       #   - artifacts_dir
       #
-      # TODO: - name: Unbundle Build Artifacts
-      # TODO:   id: unbundle
-      # TODO:   uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
-      # TODO:   with:
-      # TODO:     archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
-      # TODO:     artifacts_path: src/MarkdownModifier/Build
-      # TODO:
-      # TODO:     os: windows-latest
-      # TODO:
-      # TODO:     shell_name: ${{ steps.initialize.outputs.shell_name }}
-      # TODO:     working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
-      # TODO:
-      # TODO: - name: Run Test
-      # TODO:   run: |
-      # TODO:     python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/MarkdownModifier/TestFiles/Binary_BuildVerificationTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
+      - name: Unbundle Build Artifacts
+        id: unbundle
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
+        with:
+          archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
+          artifacts_path: src/MarkdownModifier/Build
+
+          os: windows-latest
+
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
+
+      - name: Run Test
+        run: |
+          python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/EntryPoint/LocalEndToEndTests/BuildVerification_LocalEndToEndTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
 
