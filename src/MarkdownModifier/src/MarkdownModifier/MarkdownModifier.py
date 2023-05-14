@@ -16,12 +16,11 @@
 """Contains functionality to modify Markdown content"""
 
 import re
-import uuid
 
 from enum import auto, Enum
 from io import StringIO
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Any, Callable, Match, Optional
 
 from cogapp.cogapp import Cog
 
@@ -100,53 +99,31 @@ def Modify(
 
     # ----------------------------------------------------------------------
 
+    # Create the globals made available to the plugin
+    globals: dict[str, Any] = {}
+
+    for plugin in all_plugins:
+        globals[plugin.name] = lambda *args, plugin=plugin, **kwargs: CogWrapper(plugin, *args, **kwargs)
+        globals["{}Type".format(plugin.name)] = plugin.__class__
+
     output = StringIO()
 
     cog.processFile(
         StringIO(content),
         output,
-        globals={
-            plugin.name: lambda *args, plugin=plugin, **kwargs: CogWrapper(plugin, *args, **kwargs)
-            for plugin in all_plugins
-        },
+        globals=globals,
     )
 
     content = output.getvalue()
 
     # Postprocess
-
-    # Remove the cog specs from the output as we don't want that content to be modified
-    # and don't want to have all of the plugins perform this type of logic to prevent
-    # writing in these locations.
-    scrubbed_placeholders: dict[str, str] = {}
-    content_lines = content.split("\n")
-
-    in_spec = False
-
-    for line_index, line in enumerate(content_lines):
-        should_scrub = False
-
-        if cog.isBeginSpecLine(line) and not cog.isEndOutputLine(line):
-            in_spec = True
-            should_scrub = True
-
-        if in_spec:
-            should_scrub = True
-
-            if cog.isEndSpecLine(line):
-                in_spec = False
-
-        if should_scrub:
-            key = str(uuid.uuid4()) + str(uuid.uuid4())
-
-            scrubbed_placeholders[key] = line
-            content_lines[line_index] = key
-
-    assert in_spec is False
-
-    content = "\n".join(content_lines)
-
     on_status_update(Status.Postprocessing, "Postprocessing...")
+
+    # Remove content from the output that we will never want replaced.
+    scrubbed_placeholders: dict[str, str] = {}
+
+    content = _ScrubCogSpecs(cog, content, scrubbed_placeholders)
+    content = _ScrubUrls(content, scrubbed_placeholders)
 
     for plugin in all_plugins:
         if IsExcludedPlugin(plugin):
@@ -177,3 +154,68 @@ def Modify(
             raise Exception("{}: {}".format(plugin.name, ex)) from ex
 
     return content
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def _ScrubCogSpecs(
+    cog: Cog,
+    content: str,
+    scrubbed_placeholders: dict[str, str],
+) -> str:
+    content_lines = content.split("\n")
+
+    in_spec = False
+
+    for line_index, line in enumerate(content_lines):
+        should_scrub = False
+
+        if cog.isBeginSpecLine(line) and not cog.isEndOutputLine(line):
+            in_spec = True
+            should_scrub = True
+
+        if in_spec:
+            should_scrub = True
+
+            if cog.isEndSpecLine(line):
+                in_spec = False
+
+        if should_scrub:
+            key = Plugin.CreatePlaceholderId()
+
+            scrubbed_placeholders[key] = line
+            content_lines[line_index] = key
+
+    assert in_spec is False
+
+    return "\n".join(content_lines)
+
+
+# ----------------------------------------------------------------------
+def _ScrubUrls(
+    content: str,
+    scrubbed_placeholders: dict[str, str],
+) -> str:
+    # ----------------------------------------------------------------------
+    def Matcher(
+        match: Match,
+    ) -> str:
+        key = Plugin.CreatePlaceholderId()
+
+        scrubbed_placeholders[key] = match.group(0)
+        return key
+
+    # ----------------------------------------------------------------------
+
+    return re.sub(
+        r"""(?#
+        (Prefix                             )[a-z]+(?#
+        Delimiter                           ):\/\/(?#
+        www                                 )(?:www\.)?(?#
+        Domain                              )[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}(?#
+        Suffix                              )\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)(?#
+        )""",
+        Matcher,
+        content,
+    )

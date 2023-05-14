@@ -95,9 +95,9 @@ def test_StandardWithPostprocessing(_content, _definition_list):
             Fooey
 
             <a href="#bar" data-definition-list-link=1>Bar</a>
-            bar
+            <a href="#bar" data-definition-list-link=1>bar</a>
             <a href="#bar" data-definition-list-link=1>Bars</a>
-            bars
+            <a href="#bar" data-definition-list-link=1>bars</a>
             <a href="#bar" data-definition-list-link=1>Barring</a>
             <a href="#bar" data-definition-list-link=1>Barred</a>
             Bared

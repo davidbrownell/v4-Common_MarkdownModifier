@@ -1,0 +1,40 @@
+# Definition Lists
+
+This file demonstrates the use of definition lists.
+
+<!-- [[[
+    DefinitionList(
+        {
+            "coffee": "Hot drink.",
+            "milk": "Cold drink.",
+            "water": "Hot or cold drink.",
+            "Gatorade": DefinitionListType.DefinitionInfo(
+                "Drink marketed to athletes (https://www.gatorade.com/).",
+                postprocess_type=DefinitionListType.PostprocessType.Exact,
+            ),
+        },
+    )
+]]] -->
+<!-- [[[end]]] -->
+
+## Samples
+
+### Standard
+- I drink coffee in the morning.
+- I have milk with my cereal.
+- Water is good any time of the day.
+- I drink Gatorade when I play sports, but that doesn't happen too often anymore.
+
+### Case Sensitivity
+
+- Coffee, coffee
+- Milk, milk
+- Water, water
+- Gatorade, gatorade (the latter will not be matched because `postprocess_type` is set to `DefinitionList.PostprocessType.Exact`)
+
+### Stemming
+
+- Coffee
+- Milk, milks, milked, milking
+- Water, waters, watered, watering
+- Gatorade, Gatorades (only the exact match will be decorated because `postprocess_type` is set to `DefinitionList.PostprocessType.Exact`)

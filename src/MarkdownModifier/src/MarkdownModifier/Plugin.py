@@ -15,6 +15,8 @@
 # ----------------------------------------------------------------------
 """Contains the Plugin object"""
 
+import uuid
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
@@ -36,8 +38,16 @@ class Plugin(ABC):
 
     # ----------------------------------------------------------------------
     # |
-    # |  Methods
+    # |  Public Methods
     # |
+    # ----------------------------------------------------------------------
+    @staticmethod
+    def CreatePlaceholderId() -> str:
+        return "{}{}".format(
+            str(uuid.uuid4()).replace("-", ""),
+            str(uuid.uuid4()).replace("-", ""),
+        )
+
     # ----------------------------------------------------------------------
     @staticmethod
     def CreateAnchorName(

@@ -1,0 +1,20 @@
+# Table of Contents
+
+This file demonstrates the use of table of contents.
+
+<!-- [[[TableOfContents()]]] -->
+<!-- [[[end]]] -->
+
+# One
+## One.1
+### One.1.1
+#### One.1.1.1
+### One.1.2
+
+# Two
+## Two.1
+## Two.2
+
+# Three
+### Three.1.1
+### Three.1.2
