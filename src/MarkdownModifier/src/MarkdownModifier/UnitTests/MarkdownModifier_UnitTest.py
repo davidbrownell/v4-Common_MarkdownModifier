@@ -279,6 +279,76 @@ def test_Exclude(_content):
 
 
 # ----------------------------------------------------------------------
+def test_PersistUrls():
+    # ----------------------------------------------------------------------
+    @dataclass(frozen=True)
+    class SchemePlugin(Plugin):
+        # ----------------------------------------------------------------------
+        name: ClassVar[str]                 = "Scheme"
+
+        # ----------------------------------------------------------------------
+        @overridemethod
+        def Execute(
+            self,
+            filename: Path,
+            content: str,
+        ) -> str:
+            return content
+
+        # ----------------------------------------------------------------------
+        @overridemethod
+        def Postprocess(
+            self,
+            filename: Path,
+            content: str,
+        ) -> str:
+            return content.replace("://", "REPLACED")
+
+    # ----------------------------------------------------------------------
+
+    assert Modify(
+        Path("filename"),
+        textwrap.dedent(
+            """\
+            http://www.foo.bar
+            http://foo.bar
+            http://foo.bar/with/suffix
+
+            https://www.foo.bar
+            https://foo.bar
+            https://foo.bar/with/suffix
+
+            ftp://www.foo.bar
+            ftp://foo.bar
+            ftp://foo.bar/with/suffix
+
+            The following should be replaced:
+            ://
+            """,
+        ),
+        [SchemePlugin(), ],
+        Mock(),
+    ) == textwrap.dedent(
+        """\
+        http://www.foo.bar
+        http://foo.bar
+        http://foo.bar/with/suffix
+
+        https://www.foo.bar
+        https://foo.bar
+        https://foo.bar/with/suffix
+
+        ftp://www.foo.bar
+        ftp://foo.bar
+        ftp://foo.bar/with/suffix
+
+        The following should be replaced:
+        REPLACED
+        """,
+    )
+
+
+# ----------------------------------------------------------------------
 class TestExceptions(object):
     # ----------------------------------------------------------------------
     def test_Preprocess(self):

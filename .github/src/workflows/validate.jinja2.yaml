@@ -167,20 +167,20 @@ jobs:
       # outputs:
       #   - artifacts_dir
       #
-      # TODO: - name: Unbundle Build Artifacts
-      # TODO:   id: unbundle
-      # TODO:   uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
-      # TODO:   with:
-      # TODO:     archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
-      # TODO:     artifacts_path: src/MarkdownModifier/Build
-      # TODO:
-      # TODO:     os: <<< os >>>
-      # TODO:
-      # TODO:     shell_name: ${{ steps.initialize.outputs.shell_name }}
-      # TODO:     working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
-      # TODO:
-      # TODO: - name: Run Test
-      # TODO:   run: |
-      # TODO:     python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/MarkdownModifier/TestFiles/Binary_BuildVerificationTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
+      - name: Unbundle Build Artifacts
+        id: unbundle
+        uses: davidbrownell/v4-Common_Foundation/.github/actions/unbundle_builder_artifacts@CI-latest
+        with:
+          archive_prefix: ${{ steps.checkout_source.outputs.archive_prefix }}
+          artifacts_path: src/MarkdownModifier/Build
+
+          os: <<< os >>>
+
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+          working_dir: ${{ steps.initialize.outputs.github_workspace }}/artifacts
+
+      - name: Run Test
+        run: |
+          python3 "${{ steps.checkout_source.outputs.repo_dir }}/src/MarkdownModifier/src/EntryPoint/LocalEndToEndTests/BuildVerification_LocalEndToEndTest.py" "${{ steps.unbundle.outputs.artifacts_dir }}"
 
 <<% endfor %>>

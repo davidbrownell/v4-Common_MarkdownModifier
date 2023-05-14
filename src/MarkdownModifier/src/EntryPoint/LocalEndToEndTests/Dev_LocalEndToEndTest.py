@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # |
-# |  Main_LocalEndToEndTest.py
+# |  Dev_LocalEndToEndTest.py
 # |
 # |  David Brownell <db@DavidBrownell.com>
 # |      2023-05-12 09:07:17
@@ -13,7 +13,7 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-"""EndToEnd tests for MarkdownModifier"""
+"""EndToEnd tests invoked from a development environment."""
 
 import re
 import sys

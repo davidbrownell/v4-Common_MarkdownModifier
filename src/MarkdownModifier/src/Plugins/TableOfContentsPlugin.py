@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Contains the Plugin object"""
 
-import uuid
 import re
 
 from dataclasses import dataclass, field, InitVar
@@ -134,10 +133,7 @@ class Plugin(PluginBase):
     ) -> str:
         # Defer processing, as other plugins might generate content that should be included in the
         # output of this plugin.
-        unique_id = "{}{}".format(
-            str(uuid.uuid4()).replace("-", ""),
-            str(uuid.uuid4()).replace("-", ""),
-        )
+        unique_id = self.__class__.CreatePlaceholderId()
 
         self._sections[unique_id] = Plugin._Options(
             heading_min,

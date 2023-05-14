@@ -20,7 +20,6 @@ import sys
 import textwrap
 
 from pathlib import Path
-from typing import Tuple
 
 from cx_Freeze import setup, Executable
 
@@ -74,7 +73,7 @@ else:
 
 
 # ----------------------------------------------------------------------
-include_files: list[Tuple[str, str]] = []
+include_files: list[tuple[str, str]] = []
 
 for child in Path("src/Plugins").iterdir():
     if (
@@ -82,6 +81,17 @@ for child in Path("src/Plugins").iterdir():
         or child.suffix != ".py"
         or child.stem == "__init__"
     ):
+        continue
+
+    include_files.append(
+        (
+            str(child),
+            str(Path(*child.parts[1:])),
+        ),
+    )
+
+for child in Path("src/Examples").iterdir():
+    if not child.is_file:
         continue
 
     include_files.append(
@@ -125,6 +135,7 @@ setup(
             "no_compress": False,
             "optimize": 0,
             "packages": [
+                "cogapp",
                 "nltk",
             ],
             "include_files": include_files,

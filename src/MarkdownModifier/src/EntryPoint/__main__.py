@@ -34,12 +34,15 @@ from Common_Foundation import TextwrapEx
 
 from Common_FoundationEx import ExecuteTasks
 from Common_FoundationEx.InflectEx import inflect
-from Common_FoundationEx import TyperEx
 
 # typer must be imported after the imports above
 import typer
 
 from typer.core import TyperGroup
+
+# The following imports aren't used here, but are necessary to ensure that the standard plugins work
+# as expected.
+from Common_Foundation import RegularExpression         # pylint: disable=unused-import
 
 
 # ----------------------------------------------------------------------
@@ -185,25 +188,10 @@ def _ValidatePluginNames(
 
 
 # ----------------------------------------------------------------------
-def _ValidateRegularExpression(
-    expressions: list[str],
-) -> list[Pattern]:
-    results: list[Pattern] = []
-
-    for expression in expressions:
-        try:
-            results.append(re.compile(expression))
-        except re.error:
-            raise typer.BadParameter("'{}' is not a valid regular expression.".format(expression))
-
-    return results
-
-
-# ----------------------------------------------------------------------
 _input_file_or_directory_argument           = typer.Argument(..., exists=True, resolve_path=True, help="Input filename or directory to search for files.")
 
-_include_filename_option                    = typer.Option(None, "--include-filename", callback=_ValidateRegularExpression, help="Regular expression matching filenames to include; can be specified multiple times on the command line.")
-_exclude_filename_option                    = typer.Option(None, "--exclude-filename", callback=_ValidateRegularExpression, help="Regular expression matching filenames to exclude; can be specified multiple times on the command line.")
+_include_filename_option                    = typer.Option(None, "--include-filename", help="Regular expression matching filenames to include; can be specified multiple times on the command line.")
+_exclude_filename_option                    = typer.Option(None, "--exclude-filename", help="Regular expression matching filenames to exclude; can be specified multiple times on the command line.")
 
 _include_plugins_option                     = typer.Option(None, "--include-plugin", callback=_ValidatePluginNames, help="Name of a plugin to include when modifying markdown content; can be specified multiple times on the command line.")
 _exclude_plugins_option                     = typer.Option(None, "--exclude-plugin", callback=_ValidatePluginNames, help="Name of a plugin to exclude when modifying markdown content; can be specified multiple times on the command line.")
@@ -221,8 +209,8 @@ _debug_option                               = typer.Option(False, "--debug", hel
 )
 def Execute(
     input_file_or_directory: Path=_input_file_or_directory_argument,
-    include_filenames: list[Pattern]=_include_filename_option,
-    exclude_filenames: list[Pattern]=_exclude_filename_option,
+    include_filenames: list[str]=_include_filename_option,
+    exclude_filenames: list[str]=_exclude_filename_option,
     include_plugins: list[str]=_include_plugins_option,
     exclude_plugins: list[str]=_exclude_plugins_option,
     quiet: bool=_quiet_option,
@@ -278,8 +266,8 @@ def Execute(
 )
 def Validate(
     input_file_or_directory: Path=_input_file_or_directory_argument,
-    include_filenames: list[Pattern]=_include_filename_option,
-    exclude_filenames: list[Pattern]=_exclude_filename_option,
+    include_filenames: list[str]=_include_filename_option,
+    exclude_filenames: list[str]=_exclude_filename_option,
     include_plugins: list[str]=_include_plugins_option,
     exclude_plugins: list[str]=_exclude_plugins_option,
     quiet: bool=_quiet_option,
@@ -324,8 +312,8 @@ def _Transform(
     dm: DoneManager,
     input_file_or_directory: Path,
     *,
-    include_filenames: Optional[list[Pattern]],
-    exclude_filenames: Optional[list[Pattern]],
+    include_filenames: Optional[list[str]],
+    exclude_filenames: Optional[list[str]],
     include_plugins: Optional[list[str]],
     exclude_plugins: Optional[list[str]],
     quiet: bool,
@@ -438,9 +426,32 @@ def _Transform(
 def _GetFilenames(
     dm: DoneManager,
     input_file_or_directory: Path,
-    include_filenames: Optional[list[Pattern]],
-    exclude_filenames: Optional[list[Pattern]],
+    include_filenames_param: Optional[list[str]],
+    exclude_filenames_param: Optional[list[str]],
 ) -> list[Path]:
+    # ----------------------------------------------------------------------
+    def ToRegularExpressions(
+        expressions: Optional[list[str]],
+    ) -> Optional[list[Pattern]]:
+        if expressions is None:
+            return None
+
+        results: list[Pattern] = []
+
+        for expression in expressions:
+            try:
+                results.append(re.compile(expression))
+            except re.error as ex:
+                raise typer.BadParameter(
+                    "'{}' is not a valid regular expression: {}.".format(expression, ex),
+                )
+
+        return results
+
+    # ----------------------------------------------------------------------
+
+    include_filenames = ToRegularExpressions(include_filenames_param)
+    exclude_filenames = ToRegularExpressions(exclude_filenames_param)
     # Get the files
     all_filenames: list[Path] = []
 

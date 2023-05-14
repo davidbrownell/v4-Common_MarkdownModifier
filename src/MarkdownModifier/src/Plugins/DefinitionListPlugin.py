@@ -15,7 +15,6 @@
 # ----------------------------------------------------------------------
 """Contains the Plugin object"""
 
-import os
 import re
 import string
 import textwrap
@@ -55,7 +54,7 @@ class Plugin(PluginBase):
 
         # Amalgamations
         NoPostprocessing                    = 0
-        Default                             = Exact | Stemming
+        Default                             = CaseInsensitive | Stemming
 
     # ----------------------------------------------------------------------
     @dataclass(frozen=True)
@@ -64,8 +63,8 @@ class Plugin(PluginBase):
 
         definition: str
 
-        anchor: Optional[str]                                               = field(default=None)
-        postprocess_type: Optional["Plugin.PostprocessType"]                = field(default=None)
+        anchor: Optional[str]                                               = field(kw_only=True, default=None)
+        postprocess_type: Optional["Plugin.PostprocessType"]                = field(kw_only=True, default=None)
 
     # ----------------------------------------------------------------------
     class GenerateContentFuncType(Protocol):  # pylint: disable=missing-class-docstring
@@ -169,7 +168,10 @@ class Plugin(PluginBase):
         link_template = '<a href="#{anchor}" data-definition-list-link=1>{text}</a>'
 
         # Remove previous content
-        content = RegularExpression.TemplateStringToRegex(link_template).sub(
+        content = RegularExpression.TemplateStringToRegex(
+            link_template,
+            match_whole_string=False,
+        ).sub(
             lambda match: match.group("text"),
             content,
         )
@@ -252,17 +254,6 @@ class Plugin(PluginBase):
                 matching_text: str,
             ) -> bool:
                 return matching_text.lower() == self._lower_term
-
-            # ----------------------------------------------------------------------
-            @overridemethod
-            def CreateLink(
-                self,
-                matching_text: str,
-            ) -> str:
-                return link_template.format(
-                    anchor=self.anchor,
-                    text=matching_text,
-                )
 
         # ----------------------------------------------------------------------
 

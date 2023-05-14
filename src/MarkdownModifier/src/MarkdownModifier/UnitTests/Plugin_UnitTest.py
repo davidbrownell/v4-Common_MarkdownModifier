@@ -65,6 +65,14 @@ class TestCreateAnchorName(object):
 
 
 # ----------------------------------------------------------------------
+class TestCreatePlaceholderId(object):
+    # ----------------------------------------------------------------------
+    def test_Standard(self):
+        assert len(Plugin.CreatePlaceholderId()) == 64
+        assert Plugin.CreatePlaceholderId() != Plugin.CreatePlaceholderId()
+
+
+# ----------------------------------------------------------------------
 def test_DefaultMethods():
     p = MyPlugin()
 
