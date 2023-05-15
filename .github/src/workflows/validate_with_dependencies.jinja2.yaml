@@ -24,7 +24,7 @@ on:
 jobs:
   _dc94b6b0-985b-4de3-adf7-38ccd5d230f9:
     name: "v4-Common_MarkdownModifier"
-    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-latest
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-v1
     with:
       repo_branch: ${{ inputs.repo_branch }}
       bootstrap_branch_overrides: "v4-Common_MarkdownModifier:${{ inputs.repo_branch }}"

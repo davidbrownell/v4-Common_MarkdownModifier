@@ -24,13 +24,13 @@ on:
 jobs:
   _9938d22d-5952-4123-8f5c-14a533572e9f:
     name: "Validate (target: ${{ github.base_ref }})"
-    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-latest
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/validate.yaml@CI-v1
     with:
       repo_branch: ${{ github.head_ref }}
 
   _63c3694d-ae80-4192-a105-231e597f7833:
     name: "Validate Pull Request (target: ${{ github.base_ref }})"
-    uses: davidbrownell/v4-Common_Foundation/.github/workflows/callable_validate_pull_request.yaml@CI-latest
+    uses: davidbrownell/v4-Common_Foundation/.github/workflows/callable_validate_pull_request.yaml@CI-v1
     with:
       job_name_prefix: "v4-Common_MarkdownModifier"
       is_mixin_repository: false
