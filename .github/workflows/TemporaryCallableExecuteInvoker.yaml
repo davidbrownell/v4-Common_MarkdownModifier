@@ -1,0 +1,16 @@
+name: Temporary Callable Execute Invoker
+
+on:
+  workflow_dispatch:
+
+jobs:
+  _cd2e5b1b-11be-4abd-b933-341a8b1d7762:
+    name: Temporary Callable Execute Invoker
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/callable_execute.yaml@CI-TemporaryCallableExecuteInvoker
+    with:
+      repo_name: davidbrownell/test_repo2
+      repo_branch: main
+      job_name_prefix: "JobNamePrefix"
+      os: ubuntu-latest
+      configuration: standard
+      wiki_dir: TODOWikiDir
