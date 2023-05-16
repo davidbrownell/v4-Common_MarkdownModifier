@@ -1,0 +1,58 @@
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+#
+# This file is the result of a code generation process; any changes made
+# to this file will be overwritten during the next code generation
+# invocation. Any changes MUST be made in the source file rather than in
+# this one.
+#
+#     Code Generator:         Jinja2
+#     Input Filename:         workflows/manual_markdown_modifier_execute.jinja2.yaml
+#
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------
+# |
+# |  manual_markdown_modifier_execute.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-05-16 10:51:24
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+
+name: "Markdown Modifier (Execute)"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      wiki_repo:                            {type: string, required: true, description: "GitHub repository to process (<username>/<repo_name>):" }
+      markdown_modifier_command_line_args:  {type: string, required: false, default: "", description: "Command line arguments to pass to MarkdownModifier:" }
+      force_setup:                          {type: boolean, required: false, default: false, description: "Apply the '--force' flag during setup activities."}
+      force_activate:                       {type: boolean, required: false, default: false, description: "Apply the '--force' flag during activation activities."}
+      no_cache:                             {type: boolean, required: false, default: false, description: "Do not use the GitHub action cache for this build."}
+
+jobs:
+  _916576c5-0371-4a23-9545-244cd082c907:
+    name: "Markdown Modifier Execute (${{ github.ref_name }})"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/callable_markdown_modifier_execute.yaml@CI-v1
+    with:
+      markdown_modifier_branch: ${{ github.head_ref }}
+
+      force_setup: ${{ inputs.force_setup }}
+      force_activate: ${{ inputs.force_activate }}
+      no_cache: ${{ inputs.no_cache }}
+
+      wiki_repo: ${{ inputs.wiki_repo }}
+      markdown_modifier_command_line_args: ${{ inputs.markdown_modifier_command_line_args }}

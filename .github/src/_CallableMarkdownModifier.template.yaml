@@ -1,0 +1,89 @@
+<<#
+# ----------------------------------------------------------------------
+# |
+# |  _CallableMarkdownModifier.template.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-05-16 08:53:40
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+
+The following values may be customized by child templates:
+
+  - mm_command [required]:          MarkdownModifier command
+
+#>>
+
+name: "Markdown Modifier (<<< self.mm_command() >>>)"
+
+on:
+  workflow_call:
+    inputs:
+      markdown_modifier_branch:
+        type: string
+        required: false
+        description: MarkdownModifier branch to use.
+        default: main_stable
+
+      os:
+        type: string
+        required: false
+        description: Operating system.
+        default: ubuntu-latest
+
+      force_setup:
+        type: boolean
+        required: false
+        description: "Appends the '--force' flag when setting up repositories."
+        default: false
+
+      force_activate:
+        type: boolean
+        required: false
+        description: "Appends the '--force' flag when activating repositories."
+        default: false
+
+      no_cache:
+        type: boolean
+        required: false
+        description: "Disables caching."
+        default: false
+
+      wiki_repo:
+        type: string
+        required: true
+        description: "Name of the wiki repository to modify or validate."
+
+      markdown_modifier_command_line_args:
+        type: string
+        required: false
+        description: "Command line arguments to pass to MarkdownModifier when invoked."
+
+
+jobs:
+  _d3b2d57e-313b-4f4a-ab25-aae1634cd49a:
+    name: "Markdown Modifier (<<< self.mm_command() >>>)"
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/_callable_markdown_modifier_impl.yaml@CI-v1
+    with:
+      repo_name: davidbrownell/v4-Common_MarkdownModifier
+      repo_branch: ${{ inputs.markdown_modifier_branch }}
+      configuration: standard
+
+      job_name_prefix: markdown_modifier
+      os: ${{ inputs.os }}
+      bootstrap_branch_overrides: ""
+
+      force_setup: ${{ inputs.force_setup }}
+      force_activate: ${{ inputs.force_activate }}
+      no_cache: ${{ inputs.no_cache }}
+
+      wiki_repo: ${{ inputs.wiki_repo }}
+      markdown_modifier_command: <<< self.mm_command() >>>
+      markdown_modifier_command_line_args: ${{ inputs.markdown_modifier_command_line_args }}
