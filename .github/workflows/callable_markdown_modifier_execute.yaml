@@ -30,7 +30,7 @@
 # |
 # ----------------------------------------------------------------------
 
-name: "Markdown Modifier (Execute)"
+name: "[callable] Invokes MarkdownModifier with 'Execute'"
 
 on:
   workflow_call:

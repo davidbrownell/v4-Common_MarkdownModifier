@@ -30,7 +30,7 @@
 # |
 # ----------------------------------------------------------------------
 
-name: "[impl-impl] Markdown Modifier"
+name: "[impl] Markdown Modifier"
 on:
   workflow_call:
     inputs:

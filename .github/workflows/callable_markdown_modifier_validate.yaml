@@ -30,7 +30,7 @@
 # |
 # ----------------------------------------------------------------------
 
-name: "Markdown Modifier (Validate)"
+name: "[callable] Invokes MarkdownModifier with 'Validate'"
 
 on:
   workflow_call:
