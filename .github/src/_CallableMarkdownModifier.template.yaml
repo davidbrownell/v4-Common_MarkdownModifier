@@ -21,7 +21,7 @@ The following values may be customized by child templates:
 
 #>>
 
-name: "Markdown Modifier (<<< self.mm_command() >>>)"
+name: "[callable] Invokes MarkdownModifier with '<<< self.mm_command() >>>'"
 
 on:
   workflow_call:
