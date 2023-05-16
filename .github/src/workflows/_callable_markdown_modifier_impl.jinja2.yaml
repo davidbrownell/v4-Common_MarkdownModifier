@@ -1,0 +1,51 @@
+# ----------------------------------------------------------------------
+# |
+# |  _callable_markdown_modifier_impl.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-05-15 14:04:54
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+<<% extends "<<< DEVELOPMENT_ENVIRONMENT_FOUNDATION | env >>>/.github/src/SetupAndActivate.template.yaml" %>>
+
+<<% block saa_name %>>"[impl-impl] Markdown Modifier"<<% endblock %>>
+<<% block saa_cache_prefix %>>markdown_modifier<<% endblock %>>
+
+<<% block saa_inputs %>>
+      wiki_repo:
+        type: string
+        required: true
+        description: "Name of the wiki repository to modify or validate."
+
+      markdown_modifier_command:
+        type: string
+        required: true
+        description: "'Execute' or 'Validate'."
+
+      markdown_modifier_command_line_args:
+        type: string
+        required: false
+        description: "Command line arguments to pass to MarkdownModifier when invoked."
+<<% endblock %>>
+
+<<% block saa_steps %>>
+      - name: Markdown Modifier
+        uses: davidbrownell/v4-Common_MarkdownModifier/.github/actions/markdown_modifier@CI-v1
+        with:
+          github_workspace: ${{ steps.initialize.outputs.github_workspace }}
+          script_extension: ${{ steps.initialize.outputs.script_extension }}
+          shell_name: ${{ steps.initialize.outputs.shell_name }}
+
+          activate_statement: ${{ steps.activate.outputs.activate_statement }}
+
+          wiki_repo: ${{ inputs.wiki_repo }}
+          markdown_modifier_command: ${{ inputs.markdown_modifier_command }}
+          markdown_modifier_command_line_args: "${{ inputs.markdown_modifier_command_line_args }}"
+<<% endblock %>>
