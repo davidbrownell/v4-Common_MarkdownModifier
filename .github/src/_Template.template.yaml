@@ -93,7 +93,7 @@ run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name 
 
 jobs:
   _3f6a9198-4152-4f80-a354-47290145b629:
-    name: "Markdown Modifier (<<< template_command >>>)."
+    name: "Markdown Modifier (<<< template_command >>>)"
     uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/_callable_markdown_modifier_impl.yaml@CI-v1
     with:
       wiki_repo: ${{ inputs.wiki_repo }}
@@ -108,7 +108,7 @@ jobs:
       repo_branch: ${{ inputs.markdown_modifier_branch }}
       configuration: standard
 
-      job_name_prefix: markdown_modifier
+      job_name_prefix: Markdown Modifier
       os: ubuntu-latest
       bootstrap_branch_overrides: ""
 
