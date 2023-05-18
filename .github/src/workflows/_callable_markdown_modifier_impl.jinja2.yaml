@@ -13,26 +13,17 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-<<% extends "<<< DEVELOPMENT_ENVIRONMENT_FOUNDATION | env >>>/.github/src/SetupAndActivate.template.yaml" %>>
+
+<<% extends "<<< 'DEVELOPMENT_ENVIRONMENT_FOUNDATION' | env >>>/.github/src/SetupAndActivate.template.yaml" %>>
 
 <<% block saa_name %>>"[impl] Markdown Modifier"<<% endblock %>>
 <<% block saa_cache_prefix %>>markdown_modifier<<% endblock %>>
 
 <<% block saa_inputs %>>
-      wiki_repo:
-        type: string
-        required: true
-        description: "Name of the wiki repository to modify or validate."
-
-      markdown_modifier_command:
-        type: string
-        required: true
-        description: "'Execute' or 'Validate'."
-
-      markdown_modifier_command_line_args:
-        type: string
-        required: false
-        description: "Command line arguments to pass to MarkdownModifier when invoked."
+      wiki_repo:                            { type: string, required: true }
+      markdown_modifier_command:            { type: string, required: true }
+      markdown_modifier_command_line_args:  { type: string, required: true }
+      markdown_modifier_commit_message:     { type: string, required: false }
 <<% endblock %>>
 
 <<% block saa_steps %>>
@@ -48,4 +39,5 @@
           wiki_repo: ${{ inputs.wiki_repo }}
           markdown_modifier_command: ${{ inputs.markdown_modifier_command }}
           markdown_modifier_command_line_args: "${{ inputs.markdown_modifier_command_line_args }}"
+          markdown_modifier_commit_message: "${{ inputs.markdown_modifier_commit_message }}"
 <<% endblock %>>

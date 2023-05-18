@@ -14,13 +14,12 @@
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 
-
 # ----------------------------------------------------------------------
 # |
 # |  manual_markdown_modifier_execute.yaml
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2023-05-16 10:51:24
+# |      2023-05-18 09:41:32
 # |
 # ----------------------------------------------------------------------
 # |
@@ -31,28 +30,76 @@
 # |
 # ----------------------------------------------------------------------
 
-name: "Markdown Modifier (Execute)"
-run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+name: "Invoke MarkdownModifier with 'Execute'"
 
 on:
   workflow_dispatch:
+
+
     inputs:
-      wiki_repo:                            {type: string, required: true, description: "GitHub repository to process (<username>/<repo_name>):" }
-      markdown_modifier_command_line_args:  {type: string, required: false, default: "", description: "Command line arguments to pass to MarkdownModifier:" }
-      force_setup:                          {type: boolean, required: false, default: false, description: "Apply the '--force' flag during setup activities."}
-      force_activate:                       {type: boolean, required: false, default: false, description: "Apply the '--force' flag during activation activities."}
-      no_cache:                             {type: boolean, required: false, default: false, description: "Do not use the GitHub action cache for this build."}
+      wiki_repo:
+        type: string
+        required: true
+        description: "Name of the wiki repository to modify or validate (e.g. <username>/<repository>)."
+
+      markdown_modifier_commit_message:
+        type: string
+        required: false
+        default: ""
+        description: Commit message used when committing any changes made by MarkdownModifier. No commit will be made if this message is empty."
+
+      markdown_modifier_command_line_args:
+        type: string
+        required: false
+        default: ""
+        description: Command line arguments to pass to MarkdownModifier when invoked."
+
+      markdown_modifier_branch:
+        type: string
+        required: false
+        default: main_stable
+        description: Source branch associated with the MarkdownModifier repository.
+
+      force_setup:
+        type: boolean
+        required: false
+        description: "Appends the '--force' flag when setting up repositories."
+        default: false
+
+      force_activate:
+        type: boolean
+        required: false
+        description: "Appends the '--force' flag when activating repositories."
+        default: false
+
+      no_cache:
+        type: boolean
+        required: false
+        description: "Disables caching."
+        default: false
+
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
 
 jobs:
-  _916576c5-0371-4a23-9545-244cd082c907:
-    name: "Markdown Modifier Execute (${{ github.ref_name }})"
-    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/callable_markdown_modifier_execute.yaml@CI-v1
+  _3f6a9198-4152-4f80-a354-47290145b629:
+    name: "Markdown Modifier (Execute)."
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/_callable_markdown_modifier_impl.yaml@CI-v1"
     with:
-      markdown_modifier_branch: ${{ github.head_ref }}
+      wiki_repo: ${{ inputs.wiki_repo }}
+      markdown_modifier_command: Execute
+      markdown_modifier_command_line_args: "${{ inputs.markdown_modifier_command_line_args }}"
+
+      markdown_modifier_commit_message: ${{ inputs.markdown_modifier_commit_message }}
+
+      repo_name: davidbrownell/v4-Common_MarkdownModifier
+      repo_branch: ${{ inputs.markdown_modifier_branch }}
+      configuration: standard
+
+      job_name_prefix: markdown_modifier
+      os: ubuntu-latest
+      bootstrap_branch_overrides: ""
 
       force_setup: ${{ inputs.force_setup }}
       force_activate: ${{ inputs.force_activate }}
       no_cache: ${{ inputs.no_cache }}
-
-      wiki_repo: ${{ inputs.wiki_repo }}
-      markdown_modifier_command_line_args: ${{ inputs.markdown_modifier_command_line_args }}

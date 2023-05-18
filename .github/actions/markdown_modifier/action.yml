@@ -42,14 +42,32 @@ inputs:
   wiki_repo:                                { type: string, required: true }
   markdown_modifier_command:                { type: string, required: true }
   markdown_modifier_command_line_args:      { type: string, required: false }
+  markdown_modifier_commit_message:         { type: string, required: false }
 
 runs:
   using: composite
   steps:
     - name: Checkout Wiki Source
       shell: ${{ steps.initialize.outputs.shell_name }}
-      run: git clone https://github.com/${{ inputs.wiki_repo }}.wiki "${{ inputs.github_workspace }}/wiki"
+      run: git clone https://github.com/${{ inputs.wiki_repo }} "${{ inputs.github_workspace }}/wiki"
 
     - name: "Markdown Modifier (${{ inputs.markdown_modifier_command }})"
       shell: ${{ inputs.shell_name }}
       run: ${{ inputs.activate_statement }} && MarkdownModifier${{ inputs.script_extension }} ${{ inputs.markdown_modifier_command }} "${{ inputs.github_workspace }}/wiki" ${{ inputs.markdown_modifier_command_line_args }} --debug
+
+    - name: Commit Potential Changes
+      if: ${{ (inputs.markdown_modifier_command == 'Execute' && inputs.markdown_modifier_commit_message != '') }}
+      uses: actions/github-script@v6
+      with:
+        result-encoding: string
+        script: |
+          const exec = require("child_process").exec;
+
+          exec(
+              "git status --short",
+              (error, stdout, stderr) {
+                  console.log(`TODO 1: ${error}`);
+                  console.log(`TODO 2: ${stdout}`);
+                  console.log(`TODO 3: ${stderr}`);
+              }
+          );
