@@ -31,6 +31,7 @@
         uses: davidbrownell/v4-Common_MarkdownModifier/.github/actions/markdown_modifier@CI-v1
         with:
           github_workspace: ${{ steps.initialize.outputs.github_workspace }}
+
           script_extension: ${{ steps.initialize.outputs.script_extension }}
           shell_name: ${{ steps.initialize.outputs.shell_name }}
 

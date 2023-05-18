@@ -18,6 +18,7 @@ description: Runs `MarkdownModifier` on the repository.
 
 inputs:
   github_workspace:                         { type: string, required: true }
+
   script_extension:                         { type: string, required: true }
   shell_name:                               { type: string, required: true }
 
@@ -32,26 +33,33 @@ runs:
   using: composite
   steps:
     - name: Checkout Wiki Source
-      shell: ${{ steps.initialize.outputs.shell_name }}
+      shell: ${{ inputs.shell_name }}
       run: git clone https://github.com/${{ inputs.wiki_repo }} "${{ inputs.github_workspace }}/wiki"
 
     - name: "Markdown Modifier (${{ inputs.markdown_modifier_command }})"
       shell: ${{ inputs.shell_name }}
       run: ${{ inputs.activate_statement }} && MarkdownModifier${{ inputs.script_extension }} ${{ inputs.markdown_modifier_command }} "${{ inputs.github_workspace }}/wiki" ${{ inputs.markdown_modifier_command_line_args }} --debug
 
+    - uses: actions/checkout@v3
+      if: ${{ (inputs.markdown_modifier_command == 'Execute' && inputs.markdown_modifier_commit_message != '') }}
+
     - name: Commit Potential Changes
       if: ${{ (inputs.markdown_modifier_command == 'Execute' && inputs.markdown_modifier_commit_message != '') }}
-      uses: actions/github-script@v6
-      with:
-        result-encoding: string
-        script: |
-          const exec = require("child_process").exec;
+      shell: ${{ inputs.shell_name }}
+      run: |-
+        cd "${{ inputs.github_workspace }}/wiki" > /dev/null
 
-          exec(
-              "git status --short",
-              (error, stdout, stderr) {
-                  console.log(`TODO 1: ${error}`);
-                  console.log(`TODO 2: ${stdout}`);
-                  console.log(`TODO 3: ${stderr}`);
-              }
-          );
+        git status --short > /dev/null
+        if [[ ${generation_error} != 0 ]]
+        then
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@DoesNotExist.com"
+
+          echo "\nCommitting content..."
+          git commit -a -m "${{ inputs.markdown_modifier_commit_message }}"
+
+          echo "\nPushing content..."
+          git push
+        else
+          echo "No content to commit."
+        fi
