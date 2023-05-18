@@ -3,7 +3,7 @@
 # |  manual_markdown_modifier_validate.yaml
 # |
 # |  David Brownell <db@DavidBrownell.com>
-# |      2023-05-16 08:29:36
+# |      2023-05-18 09:41:32
 # |
 # ----------------------------------------------------------------------
 # |
@@ -13,6 +13,6 @@
 # |  http://www.boost.org/LICENSE_1_0.txt.
 # |
 # ----------------------------------------------------------------------
-<<% extends "../_ManualMarkdownModifier.template.yaml" %>>
-
-<<% block mm_command %>>Validate<<% endblock %>>
+<<% extends "../_Template.template.yaml" %>>
+<<% set type="manual" %>>
+<<% set is_execute = false %>>

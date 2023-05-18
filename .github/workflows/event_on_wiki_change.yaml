@@ -1,0 +1,45 @@
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+#
+# This file is the result of a code generation process; any changes made
+# to this file will be overwritten during the next code generation
+# invocation. Any changes MUST be made in the source file rather than in
+# this one.
+#
+#     Code Generator:         Jinja2
+#     Input Filename:         workflows/event_on_wiki_change.jinja2.yaml
+#
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+# |
+# |  event_on_wiki_change.yaml
+# |
+# |  David Brownell <db@DavidBrownell.com>
+# |      2023-05-18 09:42:57
+# |
+# ----------------------------------------------------------------------
+# |
+# |  Copyright David Brownell 2023
+# |  Distributed under the Boost Software License, Version 1.0. See
+# |  accompanying file LICENSE_1_0.txt or copy at
+# |  http://www.boost.org/LICENSE_1_0.txt.
+# |
+# ----------------------------------------------------------------------
+name: "on wiki change"
+run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+
+on:
+  gollum:
+
+concurrency: "on_wiki_change"
+
+jobs:
+  name: "Markdown Modifier"
+  uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/callable_markdown_modifier.yaml@CI-v1
+  with:
+    wiki_repo: davidbrownell/v4-Common_MarkdownModifier.wiki
+    markdown_modifier_commit_message: "MarkdownModifier change"
