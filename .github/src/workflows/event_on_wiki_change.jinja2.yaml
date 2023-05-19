@@ -24,7 +24,7 @@ concurrency: "on_wiki_change"
 jobs:
   _7d8f86ec-9ed7-464b-bd55-9d79fbb7ffcf:
     name: "Markdown Modifier"
-    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/callable_markdown_modifier.yaml@CI-v1
+    uses: davidbrownell/v4-Common_MarkdownModifier/.github/workflows/callable_markdown_modifier_execute.yaml@CI-v1
     with:
       wiki_repo: davidbrownell/v4-Common_MarkdownModifier.wiki
       markdown_modifier_commit_message: "MarkdownModifier change"
