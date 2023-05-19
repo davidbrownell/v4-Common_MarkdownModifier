@@ -56,20 +56,20 @@ unknown
         type: string
         required: false
         default: ""
-        description: Commit message used when committing any changes made by MarkdownModifier. No commit will be made if this message is empty."
+        description: "Commit message used to commit any changes made by MarkdownModifier. No commit will be made if this message is empty."
 <<% endif %>>
 
       markdown_modifier_command_line_args:
         type: string
         required: false
         default: ""
-        description: Command line arguments to pass to MarkdownModifier when invoked."
+        description: "Command line arguments to pass to MarkdownModifier when invoked."
 
       markdown_modifier_branch:
         type: string
         required: false
         default: main_stable
-        description: Source branch associated with the MarkdownModifier repository.
+        description: "Source branch associated with the MarkdownModifier repository."
 
       force_setup:
         type: boolean
@@ -86,10 +86,10 @@ unknown
       no_cache:
         type: boolean
         required: false
-        description: "Disables caching."
+        description: "Disable caching."
         default: false
 
-run-name: ${{ github.run_number }} [${{ github.actor }}] on ${{ github.ref_name }}
+run-name: ${{ github.run_number }} [${{ github.actor }}] for Wiki
 
 jobs:
   _3f6a9198-4152-4f80-a354-47290145b629:

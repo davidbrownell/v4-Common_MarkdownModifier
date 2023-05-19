@@ -33,15 +33,14 @@ runs:
   using: composite
   steps:
     - name: Checkout Wiki Source
-      shell: ${{ inputs.shell_name }}
-      run: git clone https://github.com/${{ inputs.wiki_repo }} "${{ inputs.github_workspace }}/wiki"
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ inputs.wiki_repo }}
+        path: wiki
 
     - name: "Markdown Modifier (${{ inputs.markdown_modifier_command }})"
       shell: ${{ inputs.shell_name }}
       run: ${{ inputs.activate_statement }} && MarkdownModifier${{ inputs.script_extension }} ${{ inputs.markdown_modifier_command }} "${{ inputs.github_workspace }}/wiki" ${{ inputs.markdown_modifier_command_line_args }} --debug
-
-    - uses: actions/checkout@v3
-      if: ${{ (inputs.markdown_modifier_command == 'Execute' && inputs.markdown_modifier_commit_message != '') }}
 
     - name: Commit Potential Changes
       if: ${{ (inputs.markdown_modifier_command == 'Execute' && inputs.markdown_modifier_commit_message != '') }}
