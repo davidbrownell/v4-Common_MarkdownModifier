@@ -48,16 +48,21 @@ runs:
       run: |-
         cd "${{ inputs.github_workspace }}/wiki" > /dev/null
 
-        git status --short > /dev/null
-        if [[ ${generation_error} != 0 ]]
+        set +e
+        git diff --quiet; has_changes=$?
+        set -e
+
+        if [[ $has_changes -eq 1 ]]
         then
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@DoesNotExist.com"
 
-          echo "\nCommitting content..."
+          echo ""
+          echo "Committing content..."
           git commit -a -m "${{ inputs.markdown_modifier_commit_message }}"
 
-          echo "\nPushing content..."
+          echo ""
+          echo "Pushing content..."
           git push
         else
           echo "No content to commit."
