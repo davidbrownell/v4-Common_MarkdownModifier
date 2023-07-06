@@ -14,7 +14,7 @@
 # |
 # ----------------------------------------------------------------------
 
-<<% extends "<<< 'DEVELOPMENT_ENVIRONMENT_FOUNDATION' | env >>>/.github/src/SetupAndActivate.template.yaml" %>>
+<<% extends "<<< 'DEVELOPMENT_ENVIRONMENT_FOUNDATION' | env >>>/.github/src/templates/SetupAndActivate.template.yaml" %>>
 
 <<% block saa_name %>>"[impl] Markdown Modifier"<<% endblock %>>
 <<% block saa_cache_prefix %>>markdown_modifier<<% endblock %>>
